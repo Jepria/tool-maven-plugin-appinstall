@@ -49,7 +49,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * Goal which deploys war-archive to Tomcat.
  *
  */
-@Mojo( name = "tomcat.deploy", defaultPhase = LifecyclePhase.INSTALL, requiresDependencyResolution = ResolutionScope.TEST )
+@Mojo( name = "tomcat.deploy", defaultPhase = LifecyclePhase.NONE, requiresDependencyResolution = ResolutionScope.TEST )
 public class TomcatDeployMojo extends AbstractMojo
 {
   
@@ -247,7 +247,8 @@ public class TomcatDeployMojo extends AbstractMojo
     svnPath = PluginUtil.extractSubStrByPattern(svnPathRaw, "(?<=<url>).*?(?=</url>)", 0, "");
     getLog().info("SVN Path: " + svnPath);
     
-    version = Paths.get("").toAbsolutePath().getParent().getFileName().toString();
+    //version = Paths.get("").toAbsolutePath().getParent().getFileName().toString();
+    version = PluginUtil.extractSubStrByPattern(svnPath, "/Tag/([\\d]+([\\.][\\d]+)*((-|_)[\\w]*)?)", 1, "");
     getLog().info("App Version: " + version);
   }
   

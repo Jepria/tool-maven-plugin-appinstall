@@ -3,18 +3,14 @@ Maven plugin for application deployment to Tomcat with saving installation infor
 
 # Особенности на текущий момент:
 - Работает с приложениями из `SVN` репозитория. Предполагается классическая структура проекта приложения (разнесение содержимого по подпапкам `App`, `DB`, `Doc` и т.п.).
-- Путь локальной папки с приложением должен содержать версию приложения в предпоследнем элементе пути. Например:
-```
-c:\work\workspace\JepRiaShowcase\Tag\10.11.0\App\
-```
 - Подпапка `Doc` проекта должна содержать файл `map.xml` с описанием `DB` структуры. Например:
 ```
 c:\work\workspace\JepRiaShowcase\Tag\10.11.0\Doc\map.xml
 ```
 - Предварительно на целевом экземпляре `Tomcat` необходимо развернуть приложение `ModuleInfo`.
 
-# Использование (тестовое):
-- Разместить в подпапке `App` вспомогательный `pom.xml` с настройками плагина `tool-maven-plugin-appinstall`. Примерное содержание:
+# Использование:
+- Разместить в подпапке `App` вспомогательный `pom.xml` с настройками плагина `tool-maven-plugin-appinstall` или добавить настройки плагина в уже имеющийся `pom.xml` проекта. Примерное содержание `pom.xml`:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -83,12 +79,11 @@ c:\work\workspace\JepRiaShowcase\Tag\10.11.0\Doc\map.xml
         <version>1.0.0-SNAPSHOT</version>
         <inherited>false</inherited>
         <configuration>
-          <testMessage>Test</testMessage>
           <deploymentPath>http://localhost:8080/manager/text</deploymentPath>
           <contextPath>/JepRiaShowcase</contextPath>
           <username>username</username>
           <password>password</password>
-          <loadOperatorId>nagornyys/123</loadOperatorId>
+          <loadOperatorId>OperatorLogin/OperatorPassword</loadOperatorId>
           <warFile>${project.basedir}/lib/JepRiaShowcase.war</warFile>
           <skipSaveInstallInfo>false</skipSaveInstallInfo>
         </configuration>
@@ -97,5 +92,16 @@ c:\work\workspace\JepRiaShowcase\Tag\10.11.0\Doc\map.xml
   </build>
 </project>
 ```
+
 - Воспользоваться командой `mvn appinstall:tomcat.deploy` для установки приложения.
 - Воспользоваться командой `mvn appinstall:tomcat.undeploy` для удаления приложения.
+# Параметры плагина `appinstall-maven-plugin`:
+- `deploymentPath` -- путь установки приложения на Tomcat (обязательный);
+- `contextPath` -- путь контекста на Tomcat (обязательный);
+- `username` -- логин пользователя Tomcat (обязательный);
+- `password` -- пароль пользователя Tomcat (обязательный);
+- `loadOperatorId` -- оператор, устанавливающий приложение (обязательный, формат строки: `<логин оператора>/<пароль оператора>`)
+- `warFile` -- путь до war-файла приложения (не обязательный);
+- `mapXmlPath` -- путь до файла `map.xml` (не обязательный, дефолтное значение: `../Doc/map.xml`);
+- `skipSaveInstallInfo` -- флаг, отключающий сохранение информации об установке (не обязательный, дефолтное значение: `false`).
+
